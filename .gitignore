@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+venv/
+__pycache__/
+
+# build output
+build/
+dist/
+
+# environment & secrets
+.env
+*.log
+
+# large/unnecessary files
+uploads/
+*.zip
+*.mp4
+*.csv
+*.pkl
+*.h5
