@@ -17,6 +17,9 @@ import Signup from './pages/Signup';
 import Listings from './pages/Listings';
 import PropertyDetails from './pages/PropertyDetails';
 import PendingApproval from './pages/PendingApproval';
+import EditProperty from './pages/EditProperty';
+import PropertyComparison from './pages/PropertyComparison';
+
 
 // Signup Flow
 import RoleSelection from './pages/RoleSelection';
@@ -97,6 +100,21 @@ function App() {
                     </PrivateRoute>
                   } 
                 />
+
+<Route 
+  path="/edit-property/:id" 
+  element={
+    <PrivateRoute>
+      <EditProperty />
+    </PrivateRoute>
+  } 
+
+/>
+
+<Route 
+  path="/compare" 
+  element={<PropertyComparison />} 
+/>
                 
                 {/* ADMIN PANEL (Admin Only) - UPDATED */}
                 <Route 

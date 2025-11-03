@@ -4,6 +4,7 @@ import { getFeaturedProperties } from '../api/properties';
 import PropertyCard from '../components/PropertyCard';
 import { FaHome, FaBuilding, FaTree, FaStore, FaSearch } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import FeaturedCarousel from '../components/FeaturedCarousel';
 
 const Home = () => {
   const [featuredProperties, setFeaturedProperties] = useState([]);
@@ -119,38 +120,21 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Properties */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center mb-12">
-            <h2 className="text-3xl font-bold">Featured Properties</h2>
-            <Link to="/listings" className="text-blue-600 hover:text-blue-700 font-semibold">
-              View All →
-            </Link>
-          </div>
-
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-gray-200 h-96 rounded-lg animate-pulse"></div>
-              ))}
-            </div>
-          ) : featuredProperties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredProperties.map((property) => (
-                <PropertyCard key={property.id} property={property} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No featured properties available</p>
-              <Link to="/listings" className="text-blue-600 hover:text-blue-700 font-semibold mt-4 inline-block">
-                Browse All Properties →
-              </Link>
-            </div>
-          )}
-        </div>
-      </section>
+      {/* Featured Carousel */}
+<section className="py-16">
+  <div className="max-w-7xl mx-auto px-4">
+    <h2 className="text-3xl font-bold mb-8">Featured Properties</h2>
+    {loading ? (
+      <div className="bg-gray-200 h-[500px] rounded-2xl animate-pulse"></div>
+    ) : featuredProperties.length > 0 ? (
+      <FeaturedCarousel properties={featuredProperties} />
+    ) : (
+      <div className="text-center py-12 bg-white rounded-lg">
+        <p className="text-gray-500">No featured properties available</p>
+      </div>
+    )}
+  </div>
+</section>
 
       {/* Why Choose Us */}
       <section className="py-16 bg-gray-50">

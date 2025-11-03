@@ -165,3 +165,18 @@ export const rejectProperty = async (propertyId, reason, token) => {
     throw error.response?.data || error.message;
   }
 };
+
+
+// Add this function
+export const toggleFeaturedProperty = async (propertyId, token) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/properties/admin/${propertyId}/toggle-featured`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

@@ -200,12 +200,13 @@ const AdminPanel = () => {
   });
 
   const filteredProperties = properties.filter(prop => {
-    if (propertyFilters.approvalStatus && prop.approvalStatus !== propertyFilters.approvalStatus) return false;
-    if (propertyFilters.listingType && prop.listingType !== propertyFilters.listingType) return false;
-    if (propertyFilters.propertyType && prop.propertyType !== propertyFilters.propertyType) return false;
-    if (propertyFilters.search && !prop.title.toLowerCase().includes(propertyFilters.search.toLowerCase())) return false;
-    return true;
-  });
+  if (propertyFilters.approvalStatus && prop.approvalStatus !== propertyFilters.approvalStatus) return false;
+  if (propertyFilters.listingType && prop.listingType !== propertyFilters.listingType) return false;
+  if (propertyFilters.propertyType && prop.propertyType !== propertyFilters.propertyType) return false;
+  if (propertyFilters.postedByType && prop.postedByType !== propertyFilters.postedByType) return false;
+  if (propertyFilters.search && !prop.title.toLowerCase().includes(propertyFilters.search.toLowerCase())) return false;
+  return true;
+});
 
   const formatPrice = (property) => {
     const price = property.listingType === 'rent' ? property.rentPerMonth : property.price;
@@ -435,61 +436,101 @@ const AdminPanel = () => {
           {/* Users Tab */}
           {activeTab === 'users' && (
             <div className="bg-white rounded-lg shadow-md">
-              <div className="p-4 lg:p-6 border-b border-gray-200">
-                <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">User Management</h2>
-                
-                {/* Filters - Mobile Responsive */}
-                <div className="space-y-3">
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <input
-                      type="text"
-                      placeholder="Search users..."
-                      value={userFilters.search}
-                      onChange={(e) => setUserFilters({ ...userFilters, search: e.target.value })}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-                    />
-                    <button
-                      onClick={() => setUserFilters({ userType: '', providerType: '', approvalStatus: '', search: '' })}
-                      className="sm:w-auto px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <select
-                      value={userFilters.userType}
-                      onChange={(e) => setUserFilters({ ...userFilters, userType: e.target.value })}
-                      className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-                    >
-                      <option value="">All User Types</option>
-                      <option value="seeker">Seeker</option>
-                      <option value="provider">Provider</option>
-                    </select>
-                    
-                    <select
-                      value={userFilters.providerType}
-                      onChange={(e) => setUserFilters({ ...userFilters, providerType: e.target.value })}
-                      className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-                    >
-                      <option value="">All Provider Types</option>
-                      <option value="owner">Owner</option>
-                      <option value="agent">Agent</option>
-                      <option value="builder">Builder</option>
-                    </select>
-                    
-                    <select
-                      value={userFilters.approvalStatus}
-                      onChange={(e) => setUserFilters({ ...userFilters, approvalStatus: e.target.value })}
-                      className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-                    >
-                      <option value="">All Status</option>
-                      <option value="approved">Approved</option>
-                      <option value="pending">Pending</option>
-                      <option value="rejected">Rejected</option>
-                    </select>
-                  </div>
-                </div>
+              // In the AdminPanel component, update the property filters section:
+
+<div className="p-4 lg:p-6 border-b border-gray-200">
+  <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">Property Management</h2>
+  
+  {/* Filters */}
+  <div className="space-y-3">
+    <div className="flex flex-col sm:flex-row gap-3">
+      <input
+        type="text"
+        placeholder="Search properties..."
+        value={propertyFilters.search}
+        onChange={(e) => setPropertyFilters({ ...propertyFilters, search: e.target.value })}
+        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+      />
+      <button
+        onClick={() => setPropertyFilters({ approvalStatus: '', listingType: '', propertyType: '', search: '' })}
+        className="sm:w-auto px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm"
+      >
+        Reset
+      </button>
+    </div>
+    
+    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+      {/* Approval Status Filter - ENHANCED */}
+      <select
+        value={propertyFilters.approvalStatus}
+        onChange={(e) => setPropertyFilters({ ...propertyFilters, approvalStatus: e.target.value })}
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+      >
+        <option value="">All Status ({stats.totalProperties})</option>
+        <option value="approved">✅ Approved ({stats.approvedProperties})</option>
+        <option value="pending">⏳ Pending ({stats.pendingProperties})</option>
+        <option value="rejected">❌ Rejected ({stats.rejectedProperties})</option>
+      </select>
+      
+      <select
+        value={propertyFilters.listingType}
+        onChange={(e) => setPropertyFilters({ ...propertyFilters, listingType: e.target.value })}
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+      >
+        <option value="">All Types</option>
+        <option value="sale">For Sale</option>
+        <option value="rent">For Rent</option>
+      </select>
+      
+      <select
+        value={propertyFilters.propertyType}
+        onChange={(e) => setPropertyFilters({ ...propertyFilters, propertyType: e.target.value })}
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+      >
+        <option value="">All Property Types</option>
+        <option value="apartment">Apartment</option>
+        <option value="house">House</option>
+        <option value="villa">Villa</option>
+        <option value="plot">Plot</option>
+        <option value="commercial">Commercial</option>
+      </select>
+
+      {/* NEW: Posted By Filter */}
+      <select
+        value={propertyFilters.postedByType || ''}
+        onChange={(e) => setPropertyFilters({ ...propertyFilters, postedByType: e.target.value })}
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+      >
+        <option value="">All Providers</option>
+        <option value="owner">🏡 Owners</option>
+        <option value="agent">🤝 Agents</option>
+        <option value="builder">🏗️ Builders</option>
+      </select>
+    </div>
+  </div>
+
+  {/* Quick Filter Buttons */}
+  <div className="flex flex-wrap gap-2 mt-4">
+    <button
+      onClick={() => setPropertyFilters({ ...propertyFilters, approvalStatus: 'pending' })}
+      className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 text-sm font-medium"
+    >
+      ⏳ Show Pending ({stats.pendingProperties})
+    </button>
+    <button
+      onClick={() => setPropertyFilters({ ...propertyFilters, approvalStatus: 'approved' })}
+      className="px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 text-sm font-medium"
+    >
+      ✅ Show Approved ({stats.approvedProperties})
+    </button>
+    <button
+      onClick={() => setPropertyFilters({ ...propertyFilters, approvalStatus: 'rejected' })}
+      className="px-4 py-2 bg-red-100 text-red-800 rounded-lg hover:bg-red-200 text-sm font-medium"
+    >
+      ❌ Show Rejected ({stats.rejectedProperties})
+    </button>
+  </div>
+</div>
               </div>
 
               {/* Users List - Mobile Responsive */}
@@ -638,134 +679,7 @@ const AdminPanel = () => {
                 </div>
               </div>
 
-              {/* Properties List */}
-              <div className="p-4 lg:p-6">
-                <div className="space-y-4">
-                  {filteredProperties.map((property) => (
-                    <div key={property.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-                      <div className="flex flex-col md:flex-row">
-                        {/* Image */}
-                        <div className="md:w-1/4 h-48 md:h-auto relative">
-                          <img
-                            src={property.images?.[0] || 'https://via.placeholder.com/400x300'}
-                            alt={property.title}
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute top-3 left-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${
-                              property.approvalStatus === 'approved' ? 'bg-green-600' :
-                              property.approvalStatus === 'pending' ? 'bg-yellow-600' :
-                              'bg-red-600'
-                            }`}>
-                              {property.approvalStatus}
-                            </span>
-                          </div>
-                          <div className="absolute top-3 right-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${
-                              property.listingType === 'rent' ? 'bg-blue-600' : 'bg-purple-600'
-                            }`}>
-                              {property.listingType === 'rent' ? 'Rent' : 'Sale'}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="md:w-3/4 p-4">
-                          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-                            <div className="flex-1">
-                              <h3 className="text-lg font-bold text-gray-900 mb-2">{property.title}</h3>
-                              
-                              <div className="flex items-center text-gray-600 mb-3 text-sm">
-                                <FaMapMarkerAlt className="mr-1" />
-                                <span>{property.city}, {property.state}</span>
-                              </div>
-
-                              <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
-                                <div className="flex items-center">
-                                  <FaBed className="mr-1" />
-                                  <span>{property.bedrooms} Beds</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <FaBath className="mr-1" />
-                                  <span>{property.bathrooms} Baths</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <FaRulerCombined className="mr-1" />
-                                  <span>{property.area} sqft</span>
-                                </div>
-                                <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded capitalize">
-                                  {property.propertyType}
-                                </span>
-                              </div>
-
-                              <div className="flex items-center gap-4 text-sm text-gray-500">
-                                <div className="flex items-center">
-                                  <FaEye className="mr-1" />
-                                  <span>{property.views || 0} views</span>
-                                </div>
-                                <span>Posted {new Date(property.createdAt).toLocaleDateString()}</span>
-                              </div>
-                            </div>
-
-                            <div className="lg:text-right">
-                              <div className="text-2xl font-bold text-blue-600 mb-2">
-                                {formatPrice(property)}
-                              </div>
-                              {property.listingType === 'rent' && (
-                                <span className="text-gray-500 text-sm">/month</span>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
-                            {property.approvalStatus === 'pending' && (
-                              <>
-                                <button
-                                  onClick={() => handleApproveProperty(property.id)}
-                                  className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
-                                >
-                                  <FaCheckCircle />
-                                  <span className="hidden sm:inline">Approve</span>
-                                </button>
-                                <button
-                                  onClick={() => handleRejectProperty(property.id)}
-                                  className="flex items-center gap-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
-                                >
-                                  <FaTimes />
-                                  <span className="hidden sm:inline">Reject</span>
-                                </button>
-                              </>
-                            )}
-                            <a
-                              href={`/property/${property.id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-                            >
-                              <FaEye />
-                              <span className="hidden sm:inline">View</span>
-                            </a>
-                            <button
-                              onClick={() => setDeleteModal({ type: 'property', data: property })}
-                              className="flex items-center gap-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm"
-                            >
-                              <FaTrash />
-                              <span className="hidden sm:inline">Delete</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {filteredProperties.length === 0 && (
-                  <div className="text-center py-12">
-                    <p className="text-gray-500">No properties found</p>
-                  </div>
-                )}
-              </div>
+              
             </div>
           )}
         </main>
