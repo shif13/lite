@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getFeaturedProperties } from '../api/properties';
 import PropertyCard from '../components/PropertyCard';
-import { FaHome, FaBuilding, FaTree, FaStore, FaSearch } from 'react-icons/fa';
+import { FaHome, FaBuilding, FaTree, FaStore, FaSearch, FaArrowRight, FaCheckCircle, FaStar } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import FeaturedCarousel from '../components/FeaturedCarousel';
 
@@ -17,8 +16,10 @@ const Home = () => {
 
   const fetchFeaturedProperties = async () => {
     try {
-      const response = await getFeaturedProperties();
-      setFeaturedProperties(response.data || []);
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5550';
+      const response = await fetch(`${API_URL}/api/properties?featured=true&limit=5`);
+      const data = await response.json();
+      setFeaturedProperties(data.data || []);
     } catch (error) {
       console.error('Error fetching featured properties:', error);
     } finally {
@@ -34,85 +35,152 @@ const Home = () => {
   };
 
   const propertyTypes = [
-    { icon: FaBuilding, name: 'Apartments', type: 'apartment', color: 'blue' },
-    { icon: FaHome, name: 'Houses', type: 'house', color: 'green' },
-    { icon: FaTree, name: 'Villas', type: 'villa', color: 'purple' },
-    { icon: FaStore, name: 'Commercial', type: 'commercial', color: 'orange' }
+    { 
+      icon: FaBuilding, 
+      name: 'Apartments', 
+      type: 'apartment', 
+      count: '500+',
+      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'
+    },
+    { 
+      icon: FaHome, 
+      name: 'Houses', 
+      type: 'house', 
+      count: '300+',
+      image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80'
+    },
+    { 
+      icon: FaTree, 
+      name: 'Villas', 
+      type: 'villa', 
+      count: '150+',
+      image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80'
+    },
+    { 
+      icon: FaStore, 
+      name: 'Commercial', 
+      type: 'commercial', 
+      count: '50+',
+      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80'
+    }
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Find Your Dream <span className="text-yellow-300">Home</span>
+    <div className="min-h-screen bg-[#FCF7FF]">
+      {/* Hero Section with Background Image */}
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80" 
+            alt="Modern Buildings"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#034732]/95 via-[#034732]/90 to-[#880D1E]/85"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 w-full">
+          <div className="max-w-3xl">
+            <div className="inline-block mb-6 px-4 py-2 bg-[#84DD63]/20 border border-[#84DD63]/30 rounded-full backdrop-blur-sm">
+              <span className="text-[#84DD63] font-medium text-sm tracking-wide">PREMIUM PROPERTY SEARCH</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
+              Find Your Perfect
+              <span className="block text-[#84DD63] mt-2">Living Space</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100">
-              Discover the perfect property for you and your family
+            
+            <p className="text-xl md:text-2xl mb-12 text-[#C7EFCF] leading-relaxed">
+              Discover exceptional properties tailored to your lifestyle and dreams
             </p>
 
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="max-w-3xl mx-auto">
-              <div className="flex bg-white rounded-lg shadow-lg overflow-hidden">
+            <form onSubmit={handleSearch} className="mb-16">
+              <div className="flex flex-col sm:flex-row gap-3 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-3">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by city, location, or property name..."
-                  className="flex-1 px-6 py-4 text-gray-900 focus:outline-none"
+                  className="flex-1 px-6 py-5 text-gray-900 focus:outline-none bg-transparent text-lg"
                 />
                 <button
                   type="submit"
-                  className="bg-yellow-400 text-gray-900 px-8 py-4 font-semibold hover:bg-yellow-500 transition-colors"
+                  className="bg-gradient-to-r from-[#034732] to-[#880D1E] text-white px-10 py-5 rounded-xl font-semibold hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg"
                 >
-                  <FaSearch className="inline mr-2" />
-                  Search
+                  <FaSearch className="text-xl" />
+                  <span className="text-lg">Search</span>
                 </button>
               </div>
             </form>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-3xl font-bold">1000+</div>
-                <div className="text-blue-100">Properties</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-3xl font-bold">50+</div>
-                <div className="text-blue-100">Cities</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-3xl font-bold">5000+</div>
-                <div className="text-blue-100">Happy Users</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="text-3xl font-bold">100+</div>
-                <div className="text-blue-100">Agents</div>
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { num: '1000+', label: 'Properties' },
+                { num: '50+', label: 'Cities' },
+                { num: '5000+', label: 'Happy Clients' },
+                { num: '100+', label: 'Expert Agents' }
+              ].map((stat, idx) => (
+                <div key={idx} className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
+                  <div className="text-4xl font-bold text-white mb-1">{stat.num}</div>
+                  <div className="text-[#C7EFCF] text-sm">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Property Types */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Browse by Property Type</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {/* Property Types with Images */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-[#880D1E] font-semibold text-sm tracking-wide uppercase mb-3 block">
+              Browse Categories
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#034732] mb-4">
+              Browse by Property Type
+            </h2>
+            <p className="text-xl text-gray-600">Find the perfect match for your needs</p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {propertyTypes.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.type}
                   to={`/listings?propertyType=${item.type}`}
-                  className={`bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-shadow text-center group`}
+                  className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 h-80"
                 >
-                  <div className={`inline-flex items-center justify-center w-16 h-16 bg-${item.color}-100 rounded-full mb-4 group-hover:scale-110 transition-transform`}>
-                    <Icon className={`text-3xl text-${item.color}-600`} />
+                  {/* Background Image */}
+                  <div className="absolute inset-0">
+                    <img 
+                      src={item.image} 
+                      alt={item.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#034732]/95 via-[#034732]/50 to-transparent"></div>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-800">{item.name}</h3>
+                  
+                  {/* Content */}
+                  <div className="relative h-full flex flex-col justify-end p-6">
+                    <div className="mb-4 inline-flex w-14 h-14 bg-white/20 backdrop-blur-md rounded-xl items-center justify-center group-hover:bg-[#84DD63] group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                      <Icon className="text-2xl text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-[#84DD63] transition-colors duration-300">
+                      {item.name}
+                    </h3>
+                    <p className="text-[#C7EFCF] text-sm">{item.count} listings</p>
+                  </div>
+                  
+                  {/* Arrow Icon */}
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-10 h-10 bg-[#84DD63] rounded-full flex items-center justify-center">
+                      <FaArrowRight className="text-white" />
+                    </div>
+                  </div>
                 </Link>
               );
             })}
@@ -121,70 +189,124 @@ const Home = () => {
       </section>
 
       {/* Featured Carousel */}
-<section className="py-16">
-  <div className="max-w-7xl mx-auto px-4">
-    <h2 className="text-3xl font-bold mb-8">Featured Properties</h2>
-    {loading ? (
-      <div className="bg-gray-200 h-[500px] rounded-2xl animate-pulse"></div>
-    ) : featuredProperties.length > 0 ? (
-      <FeaturedCarousel properties={featuredProperties} />
-    ) : (
-      <div className="text-center py-12 bg-white rounded-lg">
-        <p className="text-gray-500">No featured properties available</p>
-      </div>
-    )}
-  </div>
-</section>
+      <section className="py-24 bg-[#F2F7F2]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <span className="text-[#880D1E] font-semibold text-sm tracking-wide uppercase mb-3 block">
+                Featured Listings
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold text-[#034732] mb-4">
+                Featured Properties
+              </h2>
+              <p className="text-xl text-gray-600">Handpicked selections just for you</p>
+            </div>
+            <Link 
+              to="/listings"
+              className="hidden md:flex items-center gap-2 text-[#034732] font-semibold text-lg hover:text-[#880D1E] transition-colors group"
+            >
+              View All <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
+            </Link>
+          </div>
+          
+          {loading ? (
+            <div className="bg-gradient-to-r from-[#D1BCE3]/20 to-[#C7EFCF]/20 h-[500px] rounded-3xl animate-pulse"></div>
+          ) : featuredProperties.length > 0 ? (
+            <FeaturedCarousel properties={featuredProperties} />
+          ) : (
+            <div className="text-center py-20 bg-white rounded-3xl shadow-lg">
+              <p className="text-gray-500 text-xl">No featured properties available at the moment</p>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Why Choose Us */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Choose FindAbode?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaHome className="text-3xl text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Wide Selection</h3>
-              <p className="text-gray-600">Browse thousands of properties across multiple cities</p>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaSearch className="text-3xl text-green-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Easy Search</h3>
-              <p className="text-gray-600">Find your perfect home with our advanced filters</p>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaBuilding className="text-3xl text-purple-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Verified Listings</h3>
-              <p className="text-gray-600">All properties are verified for your safety</p>
-            </div>
+      <section className="py-24 bg-white relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#84DD63]/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#D1BCE3]/10 rounded-full blur-3xl"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-[#880D1E] font-semibold text-sm tracking-wide uppercase mb-3 block">
+              Our Advantages
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#034732] mb-4">
+              Why Choose FindAbode?
+            </h2>
+            <p className="text-xl text-gray-600">Excellence in every aspect of property search</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {[
+              {
+                icon: FaCheckCircle,
+                title: 'Verified Listings',
+                desc: 'Every property is thoroughly verified and authenticated for your complete peace of mind',
+                color: 'from-[#034732] to-[#880D1E]'
+              },
+              {
+                icon: FaStar,
+                title: 'Expert Support',
+                desc: 'Dedicated team of professionals to guide you through your property journey',
+                color: 'from-[#880D1E] to-[#034732]'
+              },
+              {
+                icon: FaHome,
+                title: 'Wide Selection',
+                desc: 'Browse thousands of verified properties across multiple cities and neighborhoods',
+                color: 'from-[#034732] to-[#880D1E]'
+              }
+            ].map((feature, idx) => {
+              const Icon = feature.icon;
+              return (
+                <div key={idx} className="group bg-gradient-to-br from-[#FCF7FF] to-[#CEEDDB] rounded-3xl p-10 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-2 border-[#D1BCE3]/30 hover:border-[#84DD63]">
+                  <div className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-8 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                    <Icon className="text-4xl text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-[#034732]">{feature.title}</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed">{feature.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Find Your Dream Home?</h2>
-          <p className="text-xl mb-8 text-blue-100">Join thousands of happy homeowners today</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      {/* CTA Section with Image */}
+      <section className="relative py-32 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80" 
+            alt="Luxury Property"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#034732]/95 to-[#880D1E]/90"></div>
+        </div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight">
+            Ready to Find Your Dream Home?
+          </h2>
+          <p className="text-xl md:text-2xl mb-12 text-[#C7EFCF] max-w-2xl mx-auto">
+            Join thousands of satisfied homeowners who found their perfect property with us
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link
               to="/listings"
-              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+              className="group bg-white text-[#034732] px-10 py-5 rounded-xl font-bold text-lg hover:bg-[#84DD63] hover:text-white transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 flex items-center justify-center gap-3"
             >
               Browse Properties
+              <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
             </Link>
             <Link
               to="/post-property"
-              className="bg-yellow-400 text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition-colors"
+              className="group bg-transparent border-2 border-white text-white px-10 py-5 rounded-xl font-bold text-lg hover:bg-white hover:text-[#034732] transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 flex items-center justify-center gap-3"
             >
-              Post Property
+              List Your Property
+              <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
         </div>

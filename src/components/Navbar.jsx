@@ -1,4 +1,4 @@
-// frontend/src/components/Navbar.jsx (UPDATED)
+
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
@@ -24,61 +24,76 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-[#C9E4CA]/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <FaHome className="text-blue-600 text-2xl" />
-            <span className="text-2xl font-bold text-gray-800">
-              Find<span className="text-blue-600">Abode</span>
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#3B6064] to-[#55828B] rounded-xl flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300 shadow-md">
+              <FaHome className="text-white text-2xl" />
+            </div>
+            <span className="text-2xl font-bold text-[#364958]">
+              Find<span className="text-[#55828B]">Abode</span>
             </span>
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-blue-600 transition">
+            <Link 
+              to="/" 
+              className="text-[#364958] hover:text-[#55828B] transition-colors font-medium relative group"
+            >
               Home
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#87BBA2] group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link to="/listings" className="text-gray-700 hover:text-blue-600 transition">
+            <Link 
+              to="/listings" 
+              className="text-[#364958] hover:text-[#55828B] transition-colors font-medium relative group"
+            >
               Properties
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#87BBA2] group-hover:w-full transition-all duration-300"></span>
             </Link>
 
             {user ? (
               <>
-                {/* Only show Post Property for Owner/Agent/Builder */}
                 {!loading && canPostProperty() && (
                   <Link 
                     to="/post-property" 
-                    className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                    className="text-[#364958] hover:text-[#55828B] transition-colors font-medium relative group flex items-center gap-2"
                   >
-                    <FaPlus />
+                    <FaPlus className="text-sm" />
                     <span>Post Property</span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#87BBA2] group-hover:w-full transition-all duration-300"></span>
                   </Link>
                 )}
                 
-                <Link to="/wishlist" className="text-gray-700 hover:text-blue-600 transition">
-                  <FaHeart className="text-xl" />
+                <Link 
+                  to="/wishlist" 
+                  className="text-[#364958] hover:text-[#C17767] transition-colors relative group"
+                >
+                  <FaHeart className="text-2xl" />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#C17767] rounded-full animate-pulse"></span>
                 </Link>
 
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
-                    <FaUser />
+                  <button className="flex items-center space-x-2 text-[#364958] hover:text-[#55828B] font-medium">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#C9E4CA] to-[#87BBA2] rounded-full flex items-center justify-center shadow-sm">
+                      <FaUser className="text-[#3B6064]" />
+                    </div>
                     <span className="flex items-center gap-2">
                       {userData?.name || user.displayName || 'Account'}
                       {userData?.isVerified && (
-                        <FaCheckCircle className="text-blue-600 text-sm" title="Verified" />
+                        <FaCheckCircle className="text-[#87BBA2] text-sm" title="Verified" />
                       )}
                     </span>
                   </button>
                   
                   {/* Dropdown */}
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                    {/* User Info */}
+                  <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-[#C9E4CA]/50 overflow-hidden">
                     {userData && (
-                      <div className="px-4 py-3 border-b border-gray-200">
-                        <p className="text-sm font-medium text-gray-900">{userData.name}</p>
-                        <p className="text-xs text-gray-500 capitalize">
+                      <div className="px-5 py-4 bg-gradient-to-br from-[#F5F1E8] to-[#C9E4CA]/20 border-b border-[#C9E4CA]/40">
+                        <p className="text-base font-bold text-[#364958]">{userData.name}</p>
+                        <p className="text-sm text-[#55828B] capitalize font-medium mt-1">
                           {userData.userType}
                           {userData.userType === 'agent' && ' 🤝'}
                           {userData.userType === 'builder' && ' 🏗️'}
@@ -89,24 +104,24 @@ const Navbar = () => {
                     
                     <Link 
                       to="/profile" 
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      className="block px-5 py-3 text-[#364958] hover:bg-[#F5F1E8] transition-colors font-medium"
                     >
                       My Profile
                     </Link>
                     
-                    {userData?.userType === 'owner' || userData?.userType === 'agent' || userData?.userType === 'builder' ? (
+                    {(userData?.userType === 'owner' || userData?.userType === 'agent' || userData?.userType === 'builder') && (
                       <Link 
                         to="/my-properties" 
-                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        className="block px-5 py-3 text-[#364958] hover:bg-[#F5F1E8] transition-colors font-medium"
                       >
                         My Properties
                       </Link>
-                    ) : null}
+                    )}
                     
                     {isAdmin() && (
                       <Link 
                         to="/admin" 
-                        className="block px-4 py-2 text-purple-600 hover:bg-gray-100 font-semibold"
+                        className="block px-5 py-3 text-[#55828B] hover:bg-[#F5F1E8] font-bold transition-colors"
                       >
                         Admin Panel
                       </Link>
@@ -114,7 +129,7 @@ const Navbar = () => {
                     
                     <button 
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 border-t border-gray-200"
+                      className="w-full text-left px-5 py-3 text-[#C17767] hover:bg-[#F5F1E8] border-t border-[#C9E4CA]/40 font-medium transition-colors"
                     >
                       Logout
                     </button>
@@ -125,13 +140,13 @@ const Navbar = () => {
               <>
                 <Link 
                   to="/login" 
-                  className="text-gray-700 hover:text-blue-600 transition"
+                  className="text-[#364958] hover:text-[#55828B] transition-colors font-medium"
                 >
                   Login
                 </Link>
                 <Link 
                   to="/signup" 
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+                  className="bg-gradient-to-r from-[#3B6064] to-[#55828B] text-white px-6 py-2.5 rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 font-semibold"
                 >
                   Sign Up
                 </Link>
@@ -142,7 +157,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-gray-700"
+            className="md:hidden text-[#364958] w-10 h-10 flex items-center justify-center hover:bg-[#F5F1E8] rounded-lg transition-colors"
           >
             {isMenuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
           </button>
@@ -150,17 +165,17 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 space-y-4">
+          <div className="md:hidden py-6 space-y-4 border-t border-[#C9E4CA]/40 bg-gradient-to-b from-[#F5F1E8] to-white rounded-b-xl">
             <Link 
               to="/" 
-              className="block text-gray-700 hover:text-blue-600"
+              className="block text-[#364958] hover:text-[#55828B] font-medium py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
             <Link 
               to="/listings" 
-              className="block text-gray-700 hover:text-blue-600"
+              className="block text-[#364958] hover:text-[#55828B] font-medium py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
               onClick={() => setIsMenuOpen(false)}
             >
               Properties
@@ -171,22 +186,25 @@ const Navbar = () => {
                 {!loading && canPostProperty() && (
                   <Link 
                     to="/post-property" 
-                    className="block text-blue-600 font-semibold"
+                    className="block text-[#364958] hover:text-[#55828B] font-medium py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Post Property
+                    <span className="flex items-center gap-2">
+                      <FaPlus className="text-sm" />
+                      Post Property
+                    </span>
                   </Link>
                 )}
                 <Link 
                   to="/wishlist" 
-                  className="block text-gray-700"
+                  className="block text-[#364958] hover:text-[#55828B] font-medium py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Wishlist
                 </Link>
                 <Link 
                   to="/profile" 
-                  className="block text-gray-700"
+                  className="block text-[#364958] hover:text-[#55828B] font-medium py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Profile
@@ -194,7 +212,7 @@ const Navbar = () => {
                 {isAdmin() && (
                   <Link 
                     to="/admin" 
-                    className="block text-purple-600 font-semibold"
+                    className="block text-[#55828B] font-bold py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Admin Panel
@@ -205,7 +223,7 @@ const Navbar = () => {
                     handleLogout();
                     setIsMenuOpen(false);
                   }}
-                  className="block w-full text-left text-red-600"
+                  className="block w-full text-left text-[#C17767] font-medium py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
                 >
                   Logout
                 </button>
@@ -214,14 +232,14 @@ const Navbar = () => {
               <>
                 <Link 
                   to="/login" 
-                  className="block text-gray-700"
+                  className="block text-[#364958] hover:text-[#55828B] font-medium py-2 px-4 rounded-lg hover:bg-[#C9E4CA]/20 transition-all"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login
                 </Link>
                 <Link 
                   to="/signup" 
-                  className="block text-blue-600 font-semibold"
+                  className="block text-white bg-gradient-to-r from-[#3B6064] to-[#55828B] font-bold py-3 px-4 rounded-xl hover:shadow-lg transition-all text-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign Up

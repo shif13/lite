@@ -1,14 +1,11 @@
-// frontend/src/components/PrivateRoute.jsx - UPDATED
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { useUser } from '../context/UserContext';
 
-const PrivateRoute = ({ children, adminOnly = false }) => {
-  const { user, loading: authLoading } = useAuth();
-  const { userData, loading: userLoading, isAdmin } = useUser();
+const PrivateRoute = ({ children }) => {
+  const { user, loading } = useAuth();
 
   // Show loading while checking auth
-  if (authLoading || userLoading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -22,11 +19,6 @@ const PrivateRoute = ({ children, adminOnly = false }) => {
   // Check if user is logged in
   if (!user) {
     return <Navigate to="/login" replace />;
-  }
-
-  // Check admin-only routes
-  if (adminOnly && !isAdmin()) {
-    return <Navigate to="/" replace />;
   }
 
   return children;

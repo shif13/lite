@@ -48,6 +48,7 @@ const PropertyCard = ({ property, onWishlistChange, compareList, onCompareToggle
     }).format(price);
   };
 
+  // Determine which price to show based on listing type
   const displayPrice = property.listingType === 'rent' 
     ? property.rentPerMonth 
     : property.price;
@@ -69,10 +70,7 @@ const PropertyCard = ({ property, onWishlistChange, compareList, onCompareToggle
           
           {/* Wishlist Button */}
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              handleWishlist();
-            }}
+            onClick={handleWishlist}
             disabled={loading}
             className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors"
           >
